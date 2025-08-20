@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.0"
+    }
+  }
+}
+
 provider "aws" {
   region = "us-east-2"
 }
@@ -10,8 +19,10 @@ resource "aws_instance" "example" {
 
   user_data = <<-EOF
               #!/bin/bash
-              echo "Hello, World!" > index.xhtml
-              nohup busybox httpd -f -p ${var.server_port} &
+              sudo apt-get update -y
+              sudo apt-get install -y apache2
+              sudo sed -i 's/80/${var.server_port}/g' /etc/apache2/ports.conf
+              sudo service apache2 start
               EOF
   
   user_data_replace_on_change = true
