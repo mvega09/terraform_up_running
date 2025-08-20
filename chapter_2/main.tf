@@ -1,4 +1,5 @@
 terraform {
+  required_version = ">= 1.0.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -12,28 +13,31 @@ provider "aws" {
 }
 
 resource "aws_instance" "example" {
-  ami           = "ami-0b016c703b95ecbe4" # Example AMI ID, replace with a valid one
-  instance_type = "t2.micro"
+  ami                    = "ami-0b016c703b95ecbe4" # Example AMI ID, replace with a valid one
+  instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.instance.id]
 
 
-  user_data = <<-EOF
+  user_data = <<-EOT
               #!/bin/bash
-              sudo apt-get update -y
-              sudo apt-get install -y apache2
-              sudo sed -i 's/80/${var.server_port}/g' /etc/apache2/ports.conf
-              sudo service apache2 start
-              EOF
-  
+              sudo dnf update -y
+              sudo dnf install -y httpd
+              sudo systemctl enable httpd
+              sudo systemctl start httpd
+              sudo sed -i "s/Listen 80/Listen ${var.server_port}/" /etc/httpd/conf/httpd.conf
+              echo "<h1>¡Hola desde Terraform!</h1>" | sudo tee /var/www/html/index.html
+              sudo systemctl restart httpd
+              EOT
+
   user_data_replace_on_change = true
 
-    tags = {
-        Name = "terraform-example"
-    }
+  tags = {
+    Name = "terraform-example"
+  }
 }
 
 resource "aws_security_group" "instance" {
-  name        = "terraform-example-instance"
+  name = "terraform-example-instance"
 
   ingress {
     from_port   = var.server_port
@@ -47,5 +51,5 @@ resource "aws_security_group" "instance" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-  } 
+  }
 }
