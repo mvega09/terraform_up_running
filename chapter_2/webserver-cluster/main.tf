@@ -21,15 +21,16 @@ resource "aws_launch_template" "example" {
     security_groups = [aws_security_group.instance.id]
   }
 
-  user_data = base64encode(<<-EOF
-                #!/bin/bash
-                sudo dnf update -y
-                sudo dnf install -y httpd
-                sudo systemctl enable httpd
-                sudo systemctl start httpd
-                echo "Servidor: $(hostname)" > /var/www/html/index.html
-                EOF
-              )
+  user_data = <<-EOT
+              #!/bin/bash
+              sudo dnf update -y
+              sudo dnf install -y httpd
+              sudo systemctl enable httpd
+              sudo systemctl start httpd
+              sudo sed -i "s/Listen 80/Listen ${var.server_port}/" /etc/httpd/conf/httpd.conf
+              echo "<h1>¡Hola desde Terraform!</h1>" | sudo tee /var/www/html/index.html
+              sudo systemctl restart httpd
+              EOT
 
   lifecycle {
     create_before_destroy = true // Evita tiempo de inactividad al actualizar
