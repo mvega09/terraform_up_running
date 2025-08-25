@@ -14,7 +14,7 @@ provider "aws" {
 resource "aws_db_instance" "example" {
   identifier_prefix   = "terraform-mysql-instance"
   engine              = "mysql"
-  db_name             = "examplemydb"
+  db_name             = var.db_name
   allocated_storage   = 10
   instance_class      = "db.t3.micro"
   skip_final_snapshot = true
