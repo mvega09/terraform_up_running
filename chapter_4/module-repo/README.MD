@@ -3,6 +3,8 @@
 Este repositorio contiene los **módulos reutilizables de Terraform** para desplegar infraestructura en AWS.  
 Basado en el capítulo 4 de *Terraform Up & Running* (Yevgeniy Brikman), la idea es separar el **código del módulo** de la **configuración de entornos**.
 
+NOTA: el repositorio de la carpeta multi-repo-live se encuentra en la siguiente direccion https://github.com/mvega09/multi-repo-live
+
 ## Estructura
 
 - `modules/services/webserver-cluster`: Módulo que despliega un cluster de servidores web detrás de un Load Balancer y conectado a una base de datos.
@@ -12,7 +14,8 @@ Basado en el capítulo 4 de *Terraform Up & Running* (Yevgeniy Brikman), la idea
 
 ## Uso
 
-Cada entorno (`stage` y `prod`) apunta a los módulos definidos en `modules/`.  
+
+Cada entorno (`stage` y `prod`) apunta a los módulos definidos en `modules/`. (el repositorio de modules se encuentra en el siguiente link: https://github.com/mvega09/modules)
 Ejemplo de consumo de un módulo en un entorno:
 
 ```hcl
