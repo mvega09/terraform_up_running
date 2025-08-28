@@ -20,7 +20,7 @@ module "webserver_cluster" {
   db_remote_state_bucket = "my-bucket-mvega09"
   db_remote_state_key    = "stage/data-stores/mysql/terraform.tfstate"
 
-  insyance_type = "t2.micro" // In tests, a lower-cost instance than production one can be used
+  instance_type = "t2.micro" // In tests, a lower-cost instance than production one can be used
   min_size      = 2
   max_size      = 2
 }
