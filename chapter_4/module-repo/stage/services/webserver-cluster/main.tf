@@ -18,7 +18,7 @@ module "webserver_cluster" {
 
   cluster_name = "terramino-cluster-stage"
   db_remote_state_bucket = "my-bucket-mvega09"
-  db_remote_state_key    = "state/data-stores/mysql/terraform.tfstate"
+  db_remote_state_key    = "stage/data-stores/mysql/terraform.tfstate"
 
   insyance_type = "t2.micro" // In tests, a lower-cost instance than production one can be used
   min_size      = 2
