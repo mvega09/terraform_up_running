@@ -115,6 +115,31 @@ resource "aws_iam_role" "github_actions_role" {
 
 # Dar permisos a Terraform para manejar recursos (ejemplo: EC2 Full Access)
 resource "aws_iam_role_policy" "github_permissions" {
-  role   = aws_iam_role.github_actions_role.id
-  policy = data.aws_iam_policy_document.ec2_admin_permissions.json
+  role = aws_iam_role.github_actions_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:CreateRole",
+          "iam:AttachRolePolicy",
+          "iam:PutRolePolicy",
+          "iam:CreateOpenIDConnectProvider",
+          "iam:GetRole",
+          "iam:GetOpenIDConnectProvider",
+          "iam:PassRole"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:*"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
 }
