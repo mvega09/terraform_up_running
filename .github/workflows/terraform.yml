@@ -6,6 +6,7 @@ on:
     branches:
       - 'main'
     paths:
+      - '**'
       - 'terraform_up_running/chapter_6/ec2-iam-role/**'
 
 permissions:
