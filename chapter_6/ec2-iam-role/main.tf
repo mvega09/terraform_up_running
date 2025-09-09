@@ -17,7 +17,7 @@ provider "aws" {
 resource "aws_instance" "example" {
   ami           = "ami-0329ba0ced0243e2b"
   instance_type = "t2.micro"
-  description = "An example EC2 instance with an IAM role on aws"
+  description = "An example EC2 instance with an IAM role on aws for example"
 
   // Attach the IAM Instance Profile to the EC2 instance
   iam_instance_profile = aws_iam_instance_profile.instance.name
@@ -51,6 +51,7 @@ data "aws_iam_policy_document" "assume_role" {
       identifiers = ["ec2.amazonaws.com"]
     }
   }
+
 }
 
 // Attach the policy to the role
