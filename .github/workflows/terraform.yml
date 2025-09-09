@@ -1,0 +1,38 @@
+name: Terraform Apply
+
+# Solo ejecutar este flujo de trabajo en commits a la rama main
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'terraform_up_running/chapter_6/ec2-iam-role/**'
+
+permissions:
+  id-token: write
+
+jobs:
+  TerraformApply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # Autenticarse a AWS usando OIDC
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          # Especificar el rol IAM a asumir aquí
+          role-to-assume: arn:aws:iam::578624772806:role/ec2-iam-role-example20250909132111032800000001
+          aws-region: us-east-2
+
+      # Ejecutar Terraform usando la Action setup-terraform de HashiCorp
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.1.0
+          terraform_wrapper: false
+
+      # Inicializar y aplicar Terraform
+      - name: Terraform Init & Apply
+        run: |
+          terraform init
+          terraform apply -auto-approve
+        working-directory: terraform_up_running/chapter_6/ec2-iam-role
