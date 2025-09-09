@@ -37,5 +37,5 @@ jobs:
       - name: Terraform Init & Apply
         working-directory: terraform_up_running/chapter_6/ec2-iam-role
         run: |
-          terraform init -input=false
-          terraform apply -auto-approve -input=false
+          terraform init
+          terraform apply -auto-approve
