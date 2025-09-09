@@ -19,7 +19,7 @@ resource "aws_instance" "example" {
   instance_type = "t2.micro"
   
   tags = {
-    Name = "${var.name}-instance-example"
+    Name = "${var.name}-instance-mateo"
   }
 
   // Attach the IAM Instance Profile to the EC2 instance
