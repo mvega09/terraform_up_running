@@ -22,9 +22,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: arn:aws:iam::578624772806:role/ec2-iam-role-example20250909132111032800000001
+          aws-region: us-east-2
 
       # Instalar Terraform
       - name: Setup Terraform
