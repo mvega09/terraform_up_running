@@ -17,7 +17,10 @@ provider "aws" {
 resource "aws_instance" "example" {
   ami           = "ami-0329ba0ced0243e2b"
   instance_type = "t2.micro"
-  description = "An example EC2 instance with an IAM role on aws for example"
+  
+  tags = {
+    Name = "${var.name}-instance-example"
+  }
 
   // Attach the IAM Instance Profile to the EC2 instance
   iam_instance_profile = aws_iam_instance_profile.instance.name
@@ -25,7 +28,7 @@ resource "aws_instance" "example" {
 
 // Create an IAM Role for the EC2 instance
 resource "aws_iam_role" "instance" {
-  name_prefix        = var.name
+  name_prefix        = "${var.name}-ec2-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
@@ -51,7 +54,6 @@ data "aws_iam_policy_document" "assume_role" {
       identifiers = ["ec2.amazonaws.com"]
     }
   }
-
 }
 
 // Attach the policy to the role
@@ -61,4 +63,58 @@ data "aws_iam_policy_document" "ec2_admin_permissions" {
     actions   = ["ec2:*"]
     resources = ["*"]
   }
+}
+
+# Crear un proveedor de identidad IAM OIDC que confía en GitHub
+resource "aws_iam_openid_connect_provider" "github_actions" {
+  url            = "https://token.actions.githubusercontent.com"
+  client_id_list = ["sts.amazonaws.com"]
+  thumbprint_list = [
+    data.tls_certificate.github.certificates[0].sha1_fingerprint
+  ]
+}
+
+# Obtener la huella digital OIDC de GitHub
+data "tls_certificate" "github" {
+  url = "https://token.actions.githubusercontent.com"
+}
+
+data "aws_iam_policy_document" "assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+    
+    principals {
+      identifiers = [aws_iam_openid_connect_provider.github_actions.arn]
+      type        = "Federated"
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+    
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:sub"
+      # Los repos y ramas definidos en var.allowed_repos_branches
+      # podrán asumir este rol IAM
+      values = [
+        for a in var.allowed_repos_branches :
+        "repo:${a["org"]}/${a["repo"]}:ref:refs/heads/${a["branch"]}"
+      ]
+    }
+  }
+}
+
+resource "aws_iam_role" "github_actions_role" {
+  name               = "${var.name}-github-actions-role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
+}
+
+# Dar permisos a Terraform para manejar recursos (ejemplo: EC2 Full Access)
+resource "aws_iam_role_policy" "github_permissions" {
+  role   = aws_iam_role.github_actions_role.id
+  policy = data.aws_iam_policy_document.ec2_admin_permissions.json
 }
