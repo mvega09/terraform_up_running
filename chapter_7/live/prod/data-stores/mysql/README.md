@@ -1,7 +1,6 @@
 # Ejemplo de MySQL en RDS (entorno de producción)
 
-Esta carpeta contiene un ejemplo de configuración con [Terraform](https://www.terraform.io/) que despliega una base de datos MySQL (usando 
-[RDS](https://aws.amazon.com/rds/) en una [cuenta de Amazon Web Services (AWS)](http://aws.amazon.com/)). 
+Esta carpeta contiene un ejemplo de configuración con [Terraform](https://www.terraform.io/) que despliega una base de datos MySQL multi-region, una DB como primary y otra como replica en diferentes regiones para garantizar escalabilidad y disponibilidad (usando [RDS](https://aws.amazon.com/rds/) en una [cuenta de Amazon Web Services (AWS)](http://aws.amazon.com/)). 
 
 Para más información, consulta el Capítulo 7, "Trabajando con múltiples proveedores", de 
 *[Terraform: Up and Running](http://www.terraformupandrunning.com)*.
