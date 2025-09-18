@@ -23,7 +23,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.SECRETS_AWS_PACKAGING_ROLE_TO_ASSUME }}
+          role-to-assume: ${{ secrets.AWS_PACKAGING_ROLE_TO_ASSUME }}
           aws-region: us-east-2
 
       # Instalar Terraform
