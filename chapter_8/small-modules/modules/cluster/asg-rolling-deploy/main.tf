@@ -56,9 +56,9 @@ resource "aws_launch_template" "terramino" {
 // Auto Scaling Group: Grupo de instancias EC2
 // -----------------------------
 resource "aws_autoscaling_group" "terramino" {
-  name             = "${var.cluster_name}-asg"
-  min_size         = var.min_size // Mínimo de instancias
-  max_size         = var.max_size // Máximo de instancias
+  name     = "${var.cluster_name}-asg"
+  min_size = var.min_size // Mínimo de instancias
+  max_size = var.max_size // Máximo de instancias
 
   vpc_zone_identifier = var.subnet_ids // Subredes públicas
 
@@ -95,6 +95,13 @@ resource "aws_autoscaling_group" "terramino" {
       key                 = tag.key
       value               = tag.value
       propagate_at_launch = true
+    }
+  }
+
+  lifecycle {
+    postcondition {
+      condition     = length(self.availability_zones) > 1
+      error_message = "you must user more than one AZ for high availability"
     }
   }
 }
