@@ -101,7 +101,7 @@ resource "aws_autoscaling_group" "terramino" {
   lifecycle {
     postcondition {
       condition     = length(self.availability_zones) > 1
-      error_message = "you must user more than one AZ for high availability"
+      error_message = "you must use more than one AZ for high availability"
     }
   }
 }
