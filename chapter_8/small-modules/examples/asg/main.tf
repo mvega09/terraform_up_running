@@ -22,7 +22,7 @@ module "asg" {
   max_size           = 1
   enable_autoscaling = false
 
-  subnet_ids = data.aws_subnets.default.ids
+  subnet_ids = [data.aws_subnets.default.ids[0]] //de acuerdo a la postcondicion que existe en el auto_scaling_group terramino de que debe exisitir mas de una AZ se debe remover la posicion 0 y dejalo solo para que el asg se pueda crear en las 3 zonas de disponibilidad sino generara un error de acuerdo a la condition
 }
 
 data "aws_vpc" "default" {
