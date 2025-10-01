@@ -19,6 +19,11 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "ami" {
+  description = "The AMI to run in the cluster"
+  type        = string
+}
+
 variable "min_size" {
   description = "The minimum number of EC2 Instances in the ASG"
   type        = number

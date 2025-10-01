@@ -9,30 +9,11 @@ terraform {
 }
 
 // -----------------------------
-// Data Source: AMI de Ubuntu más reciente
-// -----------------------------
-data "aws_ami" "ubuntu" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"] // Filtra imágenes Ubuntu 22.04
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] // Canonical (propietario oficial de Ubuntu)
-}
-
-// -----------------------------
 // Launch Template: Plantilla para instancias EC2
 // -----------------------------
 resource "aws_launch_template" "terramino" {
   name          = "${var.cluster_name}-lt"
-  image_id      = data.aws_ami.ubuntu.id // Utiliza la AMI de Ubuntu
+  image_id      = var.ami                 // Utiliza la AMI de Ubuntu
   instance_type = var.instance_type      // Tipo de instancia definido en variables.tf
 
   // Script de inicialización
