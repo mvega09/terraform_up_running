@@ -1,8 +1,12 @@
 package test
 
 import (
-  "github.com/gruntwork-io/terratest/modules/terraform"
+  "fmt"
   "testing"
+  "time"
+
+  "github.com/gruntwork-io/terratest/modules/http-helper"
+  "github.com/gruntwork-io/terratest/modules/terraform"
 )
 
 func TestAlbExample(t *testing.T) {
