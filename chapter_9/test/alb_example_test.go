@@ -6,14 +6,20 @@ import (
   "time"
 
   "github.com/gruntwork-io/terratest/modules/http-helper"
+  "github.com/gruntwork-io/terratest/modules/random"
   "github.com/gruntwork-io/terratest/modules/terraform"
 )
 
 func TestAlbExample(t *testing.T) {
+  t.Parallel()
   opts := &terraform.Options{
     // ¡Deberías actualizar esta ruta relativa para apuntar
     // a tu directorio de ejemplo alb!
     TerraformDir: "../examples/alb",
+
+    Vars: map[string]interface{}{
+      "alb_name": fmt.Sprintf("test-%s", random.UniqueId()),
+    },
   }
 
   // Limpiar todo al final de la prueba
