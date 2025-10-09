@@ -13,11 +13,11 @@ provider "aws" {
 }
 
 module "hello_world_app" {
-  source = "../../../../modules/services/hello-world-app"
+  source = "../../../modules/services/hello-world-app"
 
   server_text = var.server_text
 
-  environment            = var.environment
+  environment = var.environment
 
   # ¡Pasar todas las salidas del módulo mysql directamente!
   mysql_config = module.mysql
