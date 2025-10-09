@@ -8,6 +8,7 @@ import (
   "github.com/gruntwork-io/terratest/modules/http-helper"
   "github.com/gruntwork-io/terratest/modules/random"
   "github.com/gruntwork-io/terratest/modules/terraform"
+  "github.com/stretchr/testify/require"
 )
 
 func TestAlbExample(t *testing.T) {
@@ -46,4 +47,43 @@ func TestAlbExample(t *testing.T) {
     maxRetries,
     timeBetweenRetries,
   )
+}
+
+func TestAlbExamplePlan(t *testing.T) {
+  t.Parallel()
+  
+  albName := fmt.Sprintf("test-%s", random.UniqueId())
+  
+  opts := &terraform.Options{
+    // ¡Deberías actualizar esta ruta relativa para apuntar
+    // a tu directorio de ejemplo alb!
+    TerraformDir: "../examples/alb",
+    
+    Vars: map[string]interface{}{
+      "alb_name": albName,
+    },
+  }
+  
+  planString := terraform.InitAndPlan(t, opts)
+
+  // Un ejemplo de cómo verificar los conteos add/change/destroy de la salida del plan
+  resourceCounts := terraform.GetResourceCount(t, planString)
+  require.Equal(t, 3, resourceCounts.Add)
+  require.Equal(t, 0, resourceCounts.Change)
+  require.Equal(t, 0, resourceCounts.Destroy)
+
+  // Un ejemplo de cómo verificar valores específicos en la salida del plan
+  planStruct := 
+    terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, opts)
+
+  alb, exists := 
+    planStruct.ResourcePlannedValuesMap["module.alb.aws_lb.terramino"]
+  require.True(t, exists, "aws_lb resource must exist")
+
+  name, exists := alb.AttributeValues["name"]
+  require.True(t, exists, "missing name parameter")
+
+  // Espera el nombre con el sufijo -alb
+  expectedName := fmt.Sprintf("%s-alb", albName)
+  require.Equal(t, expectedName, name)
 }
