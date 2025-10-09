@@ -1,4 +1,4 @@
-# Ejemplo de MySQL en RDS (entorno de stage)
+# Ejemplo de MySQL en RDS (entorno de producción)
 Esta carpeta contiene una configuración de ejemplo de Terraform que implementa una base de datos MySQL (usando RDS en una cuenta de Amazon Web Services (AWS)).
 
 ## Requisitos previos
